@@ -24,6 +24,9 @@
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.6); /* Bigger and more visible glow */
         outline: none;
     }
+    .ck-editor__editable_inline {
+        min-height: 300px;
+    }
 </style>
 @endsection
 
@@ -62,7 +65,7 @@
                     <form method="post" action="{{ route('page.store') }}">
                         {{ csrf_field() }}
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="title">Bangla Title</label>
                                     <input
@@ -80,7 +83,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="en_title">English Title</label>
                                     <input type="text" name="en_title" class="form-control" id="en_title" placeholder="Category title (English)">
@@ -100,7 +103,7 @@
                                     <textarea 
                                         class="form-control @error('description') is-invalid @enderror" 
                                         name="description" 
-                                        id="description" 
+                                        id="summernote_bn" 
                                         rows="3">{{ old('description') }}</textarea>
 
                                     @error('description')
@@ -115,7 +118,7 @@
                             <div class="col-md-12">
                                  <div class="form-group">
                                     <label for="en_description">English :: Page Contents</label>
-                                    <textarea class="form-control" name="en_description" id="en_description" rows="3"></textarea>
+                                    <textarea class="form-control" name="en_description" id="summernote_en" rows="3"></textarea>
                                     @if ($errors->has('en_description'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('en_description') }}</strong>
@@ -125,7 +128,7 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-purple pull-right">Save</button>
-                        <a href="{{ route('category.index') }}" class="btn btn-success mdi mdi-undo-variant width-sm mx-1">Back</a>
+                        <a href="{{ route('page.index') }}" class="btn btn-success mdi mdi-undo-variant width-sm mx-1">Back</a>
                     </form>
                 </div>
 
@@ -135,4 +138,51 @@
 </div> <!-- container -->
 @endsection
 @section('scripts')
+<script>
+$(document).ready(function() {
+    $('#summernote_bn').summernote({
+        height: 300,
+        callbacks: {
+            onImageUpload: function(files) {
+                for (let i = 0; i < files.length; i++) {
+                    uploadImage(files[i], '#summernote_bn');
+                }
+            }
+        }
+    });
+
+    $('#summernote_en').summernote({
+        height: 300,
+        callbacks: {
+            onImageUpload: function(files) {
+                for (let i = 0; i < files.length; i++) {
+                    uploadImage(files[i], '#summernote_en');
+                }
+            }
+        }
+    });
+
+    function uploadImage(file, editorSelector) {
+        let data = new FormData();
+        data.append("file", file);
+        data.append("_token", "{{ csrf_token() }}");
+
+        $.ajax({
+            url: "{{ route('summernote.upload') }}",
+            method: "POST",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if (response.url) {
+                    $(editorSelector).summernote('insertImage', response.url);
+                }
+            },
+            error: function(err) {
+                alert('Image upload failed.');
+            }
+        });
+    }
+});
+</script>
 @endsection

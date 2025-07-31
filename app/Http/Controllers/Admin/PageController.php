@@ -185,4 +185,17 @@ class PageController extends Controller
             'message' => 'Page deleted successfully!'
         ]);
     }
+
+    public function upload(Request $request)
+{
+    if ($request->hasFile('file')) {
+        $image = $request->file('file');
+        $filename = time() . '.' . $image->getClientOriginalExtension();
+        $path = $image->move(public_path('uploads/summernote'), $filename);
+
+        return response()->json(['url' => asset('uploads/summernote/' . $filename)]);
+    }
+
+    return response()->json(['error' => 'No file uploaded'], 400);
+}
 }

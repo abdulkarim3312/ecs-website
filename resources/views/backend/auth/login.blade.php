@@ -66,19 +66,9 @@
                                         </span>
                                     @enderror
 
-                                    <div class="form-group mb-3">
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
-                                            <label class="form-check-label ms-1" for="checkbox-signin">Remember me</label>
-                                        </div>
-                                    </div>
-
                                     <div class="form-group text-center mb-3">
                                         <button class="btn btn-success btn-block waves-effect waves-light w-100" type="submit"> Log In </button>
                                     </div>
-
-                                    {{-- <a href="auth-recoverpw.html" class="text-muted"><i class="mdi mdi-lock me-1"></i> Forgot your password?</a> --}}
-
                                 </form>
                             </div>
                         </div>

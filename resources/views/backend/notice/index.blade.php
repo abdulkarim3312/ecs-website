@@ -53,6 +53,10 @@
         transform: translateX(20px);
         }
 
+        .action_btn{
+            padding: 5px 5px;
+        }
+
 </style>
 @endsection
 
@@ -119,7 +123,7 @@
             { data: 'en_title', name: 'en_title', width: '30%' },
             { data: 'published_by', name: 'published_by' },
             { data: 'created_at', name: 'created_at' },
-            { data: 'action', title: 'Action', orderable: false, searchable: false }
+            { data: 'action', title: 'Action', orderable: false, searchable: false, width: '15%' }
         ]
     });
 
