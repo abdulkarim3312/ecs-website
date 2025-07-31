@@ -24,6 +24,18 @@
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.6); /* Bigger and more visible glow */
         outline: none;
     }
+    img.note-float-left {
+        float: left;
+        margin-right: 15px;
+    }
+    img.note-float-right {
+        float: right;
+        margin-left: 15px;
+    }
+    img.note-float-none {
+        display: block;
+        margin: 0 auto;
+    }
 </style>
 @endsection
 
@@ -88,7 +100,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Bangla :: Notice Description</label>
-                            <textarea class="form-control" name="description" id="description" rows="3">{{ strip_tags($notice->bn_description()) }}</textarea>
+                            <textarea class="form-control" name="description" id="summernote_bn" rows="3">{{ strip_tags($notice->bn_description()) }}</textarea>
                             @if ($errors->has('description'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('description') }}</strong>
@@ -97,7 +109,7 @@
                         </div>
                         <div class="form-group">
                             <label for="en_description">English :: Notice Description</label>
-                            <textarea class="form-control" name="en_description" id="en_description" rows="3">{{ strip_tags($notice->en_description()) }}</textarea>
+                            <textarea class="form-control" name="en_description" id="summernote_en" rows="3">{{ strip_tags($notice->en_description()) }}</textarea>
                             @if ($errors->has('en_description'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('en_description') }}</strong>
@@ -105,7 +117,7 @@
                             @endif
                         </div>
                         <div class="form-group">
-                            <select class="form-control col-md-6" name="category_id">
+                            <select class="form-control col-md-6" name="category_id" data-toggle="select2">
                                 <option value="">Select category</option>
                                 @foreach($categories as $category)
                                     @if( $category->id == $notice->category_id )
@@ -155,7 +167,8 @@
                                 </span>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-success pull-right">Update notice</button>
+                        <button type="submit" class="btn btn-purple pull-right">Update</button>
+                        <a href="{{ route('notice.index') }}" class="btn btn-success mdi mdi-undo-variant width-sm mx-1">Back</a>
                     </form>
                 </div>
 
@@ -165,4 +178,62 @@
 </div> <!-- container -->
 @endsection
 @section('scripts')
+<script>
+    $(document).ready(function() {
+        $('#summernote_bn').summernote({
+            height: 300,
+            popover: {
+                image: [
+                    ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+                    ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                    ['remove', ['removeMedia']]
+                ]
+            },
+            callbacks: {
+                onImageUpload: function(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        uploadImage(files[i], '#summernote_bn');
+                    }
+                }
+            }
+        });
+        $('#summernote_en').summernote({
+            height: 300,
+            popover: {
+                image: [
+                    ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+                    ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                    ['remove', ['removeMedia']]
+                ]
+            },
+            callbacks: {
+                onImageUpload: function(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        uploadImage(files[i], '#summernote_en');
+                    }
+                }
+            }
+        });
+    });
+
+    function uploadImage(file, editorSelector) {
+        let data = new FormData();
+        data.append("file", file);
+        data.append("_token", '{{ csrf_token() }}'); 
+
+        $.ajax({
+            url: '{{ route("summernote.upload") }}', 
+            method: 'POST',
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                $(editorSelector).summernote('insertImage', response.url);
+            },
+            error: function(err) {
+                alert('Image upload failed!');
+            }
+        });
+    }
+</script>
 @endsection

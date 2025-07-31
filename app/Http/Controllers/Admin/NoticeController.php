@@ -59,8 +59,12 @@ class NoticeController extends Controller
                 ->addColumn('action', function (Notice $notice) {
                     $editUrl = route('notice.edit', $notice->id);
                     $deleteUrl = route('notice.destroy', $notice->id);
+                    $showUrl = route('notice.show', $notice->id);
 
                     return '
+                        <a href="' . $showUrl . '" class="btn btn-sm btn-purple text-white">
+                            <i class="fa fa-eye"></i>
+                        </a>
                         <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
                             <i class="fa fa-edit"></i>
                         </a>
@@ -150,7 +154,10 @@ class NoticeController extends Controller
      * @param  \App\Notice  $notice
      * @return \Illuminate\Http\Response
      */
-    public function show(Notice $notice){}
+    public function show(Notice $notice)
+    {
+        return view('backend.notice.show', compact('notice'));
+    }
 
     /**
      * Show the form for editing the specified notice.

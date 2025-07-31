@@ -115,6 +115,33 @@
                 </div>
             </li>
             <li class="side-nav-item {{ 
+                (Route::is('notice.index') || 
+                Route::is('notice.show') || 
+                Route::is('notice.create') ||
+                Route::is('notice.edit')) ? 'active' : ''
+            }}">
+                <a data-bs-toggle="collapse" href="#sidebarNoticePages" aria-expanded="false" aria-controls="sidebarNoticePages" class="side-nav-link">
+                    <span class="menu-icon"><i class="mdi mdi-file-document-outline"></i></span>
+                    <span class="menu-text"> Notice</span>
+                    <span class="menu-arrow"></span>
+                </a>
+                <div class="collapse {{ 
+                    (Route::is('notice.index') || 
+                    Route::is('notice.show') || 
+                    Route::is('notice.create') || 
+                    Route::is('notice.edit')) ? 'show' : ''
+                }}" id="sidebarNoticePages">
+                    <ul class="sub-menu">
+                         <li class="side-nav-item {{ (Route::is('notice.index') || Route::is('notice.edit') || Route::is('notice.create')) ? 'active' : '' }}">
+                            <a href="{{ route('notice.index') }}" class="side-nav-link {{ (Route::is('notice.index') || Route::is('notice.edit') ||Route::is('notice.show')|| Route::is('notice.create')) ? 'active' : '' }}">
+                                <i class="fas fa-arrow-right"></i>
+                                <span class="menu-text">Notice</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="side-nav-item {{ 
                 (Route::is('category.index') || 
                 Route::is('category.show') || 
                 Route::is('category.create') ||
@@ -223,29 +250,23 @@
                 </div>
             </li>
             <li class="side-nav-item {{ 
-                (Route::is('notice.index') || 
-                Route::is('notice.show') || 
-                Route::is('notice.create') ||
-                Route::is('notice.edit')) ? 'active' : ''
+                (Route::is('banner.index') || 
+                Route::is('banner.show') || 
+                Route::is('banner.create') ||
+                Route::is('banner.edit')) ? 'active' : ''
             }}">
-                <a data-bs-toggle="collapse" href="#sidebarNoticePages" aria-expanded="false" aria-controls="sidebarNoticePages" class="side-nav-link">
+                <a data-bs-toggle="collapse" href="#sidebarSettingPages" aria-expanded="false" aria-controls="sidebarSettingPages" class="side-nav-link">
                     <span class="menu-icon"><i class="mdi mdi-file-document-outline"></i></span>
                     <span class="menu-text">Site Setting</span>
                     <span class="menu-arrow"></span>
                 </a>
                 <div class="collapse {{ 
-                    (Route::is('notice.index') || 
-                    Route::is('notice.show') || 
-                    Route::is('notice.create') || 
-                    Route::is('notice.edit')) ? 'show' : ''
-                }}" id="sidebarNoticePages">
+                    (Route::is('banner.index') || 
+                    Route::is('banner.show') || 
+                    Route::is('banner.create') || 
+                    Route::is('banner.edit')) ? 'show' : ''
+                }}" id="sidebarSettingPages">
                     <ul class="sub-menu">
-                        <li class="side-nav-item {{ (Route::is('notice.index') || Route::is('notice.edit') || Route::is('notice.create')) ? 'active' : '' }}">
-                            <a href="{{ route('notice.index') }}" class="side-nav-link {{ (Route::is('notice.index') || Route::is('notice.edit') || Route::is('notice.create')) ? 'active' : '' }}">
-                                <i class="fas fa-arrow-right"></i>
-                                <span class="menu-text">Notice</span>
-                            </a>
-                        </li>
                         <li class="side-nav-item {{ (Route::is('gallery.index') || Route::is('gallery.edit') || Route::is('gallery.create')) ? 'active' : '' }}">
                             <a href="{{ route('gallery.index') }}" class="side-nav-link {{ (Route::is('gallery.index') || Route::is('gallery.edit') || Route::is('gallery.create')) ? 'active' : '' }}">
                                 <i class="fas fa-arrow-right"></i>

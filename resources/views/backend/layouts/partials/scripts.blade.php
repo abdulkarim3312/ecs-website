@@ -35,3 +35,5 @@
 
     <!-- Datatables init -->
     <script src="{{ asset('backend/assets/js/pages/table-datatable.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
