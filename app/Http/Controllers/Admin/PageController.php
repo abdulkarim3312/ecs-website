@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Validator;
 use App\Models\Page;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\PageTranslation;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 class PageController extends Controller
@@ -186,16 +188,39 @@ class PageController extends Controller
         ]);
     }
 
+    // public function upload(Request $request)
+    // {
+    //     if ($request->hasFile('file')) {
+    //         $image = $request->file('file');
+    //         $filename = time() . '.' . $image->getClientOriginalExtension();
+    //         $path = $image->move(public_path('uploads/summernote'), $filename);
+
+    //         return response()->json(['url' => asset('uploads/summernote/' . $filename)]);
+    //     }
+
+    //     return response()->json(['error' => 'No file uploaded'], 400);
+    // }
+
     public function upload(Request $request)
-{
-    if ($request->hasFile('file')) {
-        $image = $request->file('file');
-        $filename = time() . '.' . $image->getClientOriginalExtension();
-        $path = $image->move(public_path('uploads/summernote'), $filename);
+    {
+        if (!$request->hasFile('file')) {
+            return response()->json(['error' => 'No file uploaded'], 400);
+        }
 
-        return response()->json(['url' => asset('uploads/summernote/' . $filename)]);
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|image|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->all(), 400);
+        }
+
+        $file = $request->file('file');
+        $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('public/uploads/tinymce', $filename);
+
+        return response()->json([
+            'location' => Storage::url($path),
+        ]);
     }
-
-    return response()->json(['error' => 'No file uploaded'], 400);
-}
 }
