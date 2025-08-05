@@ -118,7 +118,7 @@
                             <div class="col-md-12">
                                  <div class="form-group">
                                     <label for="en_description">English :: Page Contents</label>
-                                    <textarea class="form-control" name="en_description" id="summernote_en" rows="3"></textarea>
+                                    <textarea class="form-control my-editor" name="en_description" id="summernote_en" rows="3"></textarea>
                                     @if ($errors->has('en_description'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('en_description') }}</strong>
@@ -138,51 +138,74 @@
 </div> <!-- container -->
 @endsection
 @section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/tinymce.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('#summernote_bn').summernote({
-        height: 300,
-        callbacks: {
-            onImageUpload: function(files) {
-                for (let i = 0; i < files.length; i++) {
-                    uploadImage(files[i], '#summernote_bn');
+    tinymce.init({
+        selector: 'textarea.my-editor',
+        height: 400,
+        plugins: 'image link media code lists table',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code',
+        relative_urls: false,
+        images_upload_url: '{{ route("tinymce.upload") }}',
+        automatic_uploads: true,
+        file_picker_types: 'image',
+        images_upload_handler: function (blobInfo, success, failure) {
+            let xhr, formData;
+
+            xhr = new XMLHttpRequest();
+            xhr.withCredentials = false;
+            xhr.open('POST', '{{ route("tinymce.upload") }}');
+
+            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+
+            xhr.onload = function () {
+                let json;
+
+                if (xhr.status !== 200) {
+                    failure('HTTP Error: ' + xhr.status);
+                    return;
                 }
+
+                json = JSON.parse(xhr.responseText);
+
+                if (!json || typeof json.location != 'string') {
+                    failure('Invalid JSON: ' + xhr.responseText);
+                    return;
+                }
+
+                success(json.location);
+            };
+
+            formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+            xhr.send(formData);
+        },
+
+        file_picker_callback: function (callback, value, meta) {
+            let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+            let y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+
+            let cmsURL = '/laravel-filemanager?editor=' + meta.fieldname;
+            if (meta.filetype == 'image') {
+                cmsURL = cmsURL + "&type=Images";
+            } else {
+                cmsURL = cmsURL + "&type=Files";
             }
+
+            tinyMCE.activeEditor.windowManager.openUrl({
+                url: cmsURL,
+                title: 'File Manager',
+                width: x * 0.8,
+                height: y * 0.8,
+                resizable: "yes",
+                close_previous: "no",
+                onMessage: function (api, message) {
+                    callback(message.content);
+                }
+            });
         }
     });
-
-    $('#summernote_en').summernote({
-        height: 300,
-        callbacks: {
-            onImageUpload: function(files) {
-                for (let i = 0; i < files.length; i++) {
-                    uploadImage(files[i], '#summernote_en');
-                }
-            }
-        }
-    });
-
-    function uploadImage(file, editorSelector) {
-        let data = new FormData();
-        data.append("file", file);
-        data.append("_token", "{{ csrf_token() }}");
-
-        $.ajax({
-            url: "{{ route('summernote.upload') }}",
-            method: "POST",
-            data: data,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                if (response.url) {
-                    $(editorSelector).summernote('insertImage', response.url);
-                }
-            },
-            error: function(err) {
-                alert('Image upload failed.');
-            }
-        });
-    }
-});
+    
 </script>
 @endsection

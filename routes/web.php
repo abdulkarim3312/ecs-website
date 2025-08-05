@@ -65,8 +65,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::get('global-setting', [GlobalSettingController::class, 'create'])->name('global.create');
     Route::post('global-store', [GlobalSettingController::class, 'updateOrCreateGlobalSetting'])->name('global.store');
 
-    Route::post('/summernote-upload', [PageController::class, 'upload'])->name('summernote.upload');
+    // Route::post('/summernote-upload', [PageController::class, 'upload'])->name('summernote.upload');
+
+    Route::post('/tinymce/upload', [PageController::class, 'upload'])->name('tinymce.upload');
 
 
     Route::post('/logout', [UserController::class, 'adminLogout'])->name('admin-logout');
+});
+
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
 });
