@@ -187,40 +187,5 @@ class PageController extends Controller
             'message' => 'Page deleted successfully!'
         ]);
     }
-
-    // public function upload(Request $request)
-    // {
-    //     if ($request->hasFile('file')) {
-    //         $image = $request->file('file');
-    //         $filename = time() . '.' . $image->getClientOriginalExtension();
-    //         $path = $image->move(public_path('uploads/summernote'), $filename);
-
-    //         return response()->json(['url' => asset('uploads/summernote/' . $filename)]);
-    //     }
-
-    //     return response()->json(['error' => 'No file uploaded'], 400);
-    // }
-
-    public function upload(Request $request)
-    {
-        if (!$request->hasFile('file')) {
-            return response()->json(['error' => 'No file uploaded'], 400);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|image|max:5120',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors()->all(), 400);
-        }
-
-        $file = $request->file('file');
-        $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('public/uploads/tinymce', $filename);
-
-        return response()->json([
-            'location' => Storage::url($path),
-        ]);
-    }
+ 
 }
