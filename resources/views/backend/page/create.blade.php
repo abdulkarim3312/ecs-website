@@ -47,6 +47,7 @@
             </div>
         </div>
     </div>
+{{-- {{ url('') }} --}}
 
     <div class="row">
         <div class="col-lg-12">
@@ -146,41 +147,9 @@
         plugins: 'image link media code lists table',
         toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code',
         relative_urls: false,
-        images_upload_url: '{{ route("tinymce.upload") }}',
         automatic_uploads: true,
         file_picker_types: 'image',
-        images_upload_handler: function (blobInfo, success, failure) {
-            let xhr, formData;
-
-            xhr = new XMLHttpRequest();
-            xhr.withCredentials = false;
-            xhr.open('POST', '{{ route("tinymce.upload") }}');
-
-            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-
-            xhr.onload = function () {
-                let json;
-
-                if (xhr.status !== 200) {
-                    failure('HTTP Error: ' + xhr.status);
-                    return;
-                }
-
-                json = JSON.parse(xhr.responseText);
-
-                if (!json || typeof json.location != 'string') {
-                    failure('Invalid JSON: ' + xhr.responseText);
-                    return;
-                }
-
-                success(json.location);
-            };
-
-            formData = new FormData();
-            formData.append('file', blobInfo.blob(), blobInfo.filename());
-
-            xhr.send(formData);
-        },
+        
 
         file_picker_callback: function (callback, value, meta) {
             let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
