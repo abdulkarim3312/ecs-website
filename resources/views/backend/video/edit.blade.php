@@ -74,7 +74,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Video Description (Optional)</label>
-                            <textarea class="form-control" name="description" id="description" rows="3">{!! $video->description !!}</textarea>
+                            <textarea class="form-control my-editor" name="description" id="description" rows="3">{!! $video->description !!}</textarea>
                             @if ($errors->has('description'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('description') }}</strong>
@@ -101,4 +101,41 @@
 </div> 
 @endsection
 @section('scripts')
+<script>
+    tinymce.init({
+        selector: 'textarea.my-editor',
+        height: 400,
+        plugins: 'image link media code lists table',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code',
+        relative_urls: false,
+        automatic_uploads: true,
+        file_picker_types: 'image',
+        
+
+        file_picker_callback: function (callback, value, meta) {
+            let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+            let y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+
+            let cmsURL = '/laravel-filemanager?editor=' + meta.fieldname;
+            if (meta.filetype == 'image') {
+                cmsURL = cmsURL + "&type=Images";
+            } else {
+                cmsURL = cmsURL + "&type=Files";
+            }
+
+            tinyMCE.activeEditor.windowManager.openUrl({
+                url: cmsURL,
+                title: 'File Manager',
+                width: x * 0.8,
+                height: y * 0.8,
+                resizable: "yes",
+                close_previous: "no",
+                onMessage: function (api, message) {
+                    callback(message.content);
+                }
+            });
+        }
+    });
+    
+</script>
 @endsection

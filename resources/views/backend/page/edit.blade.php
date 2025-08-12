@@ -100,7 +100,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="description">Bangla :: Page Contents</label>
-                                    <textarea class="form-control editor" name="description" id="summernote_bn" rows="10">{{ $page->bn_description() }}</textarea>
+                                    <textarea class="form-control my-editor" name="description" id="summernote_bn" rows="10">{{ $page->bn_description() }}</textarea>
                                     @if ($errors->has('description'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('description') }}</strong>
@@ -113,7 +113,7 @@
                             <div class="col-md-12">
                                  <div class="form-group">
                                     <label for="en_description">English :: Page Contents</label>
-                                    <textarea class="form-control editor" name="en_description" id="summernote_en" rows="10">{{ $page->en_description() }}</textarea>
+                                    <textarea class="form-control my-editor" name="en_description" id="summernote_en" rows="10">{{ $page->en_description() }}</textarea>
                                     @if ($errors->has('en_description'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('en_description') }}</strong>
@@ -135,50 +135,40 @@
 @section('scripts')
 
 <script>
-$(document).ready(function() {
-    $('#summernote_bn').summernote({
-        height: 300,
-        callbacks: {
-            onImageUpload: function(files) {
-                for (let i = 0; i < files.length; i++) {
-                    uploadImage(files[i], '#summernote_bn');
-                }
+    tinymce.init({
+        selector: 'textarea.my-editor',
+        height: 400,
+        plugins: 'image link media code lists table',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code',
+        relative_urls: false,
+        automatic_uploads: true,
+        file_picker_types: 'image',
+        
+
+        file_picker_callback: function (callback, value, meta) {
+            let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+            let y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+
+            let cmsURL = '/laravel-filemanager?editor=' + meta.fieldname;
+            if (meta.filetype == 'image') {
+                cmsURL = cmsURL + "&type=Images";
+            } else {
+                cmsURL = cmsURL + "&type=Files";
             }
+
+            tinyMCE.activeEditor.windowManager.openUrl({
+                url: cmsURL,
+                title: 'File Manager',
+                width: x * 0.8,
+                height: y * 0.8,
+                resizable: "yes",
+                close_previous: "no",
+                onMessage: function (api, message) {
+                    callback(message.content);
+                }
+            });
         }
     });
-
-    $('#summernote_en').summernote({
-        height: 300,
-        callbacks: {
-            onImageUpload: function(files) {
-                for (let i = 0; i < files.length; i++) {
-                    uploadImage(files[i], '#summernote_en');
-                }
-            }
-        }
-    });
-
-    function uploadImage(file, editorSelector) {
-        let data = new FormData();
-        data.append("file", file);
-        data.append("_token", "{{ csrf_token() }}");
-
-        $.ajax({
-            url: "{{ route('summernote.upload') }}",
-            method: "POST",
-            data: data,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                if (response.url) {
-                    $(editorSelector).summernote('insertImage', response.url);
-                }
-            },
-            error: function(err) {
-                alert('Image upload failed.');
-            }
-        });
-    }
-});
+    
 </script>
 @endsection
