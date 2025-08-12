@@ -102,7 +102,7 @@
                                     <label for="description">Bangla :: Page Contents</label>
                                     
                                     <textarea 
-                                        class="form-control @error('description') is-invalid @enderror" 
+                                        class="form-control my-editor @error('description') is-invalid @enderror" 
                                         name="description" 
                                         id="summernote_bn" 
                                         rows="3">{{ old('description') }}</textarea>
@@ -139,7 +139,6 @@
 </div> <!-- container -->
 @endsection
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.4.2/tinymce.min.js"></script>
 <script>
     tinymce.init({
         selector: 'textarea.my-editor',

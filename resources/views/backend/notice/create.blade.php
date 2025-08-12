@@ -96,7 +96,7 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Bangla :: Notice Description</label>
-                            <textarea class="form-control" name="description" id="summernote_bn" rows="3"></textarea>
+                            <textarea class="form-control my-editor" name="description" id="summernote_bn" rows="3"></textarea>
                             @if ($errors->has('description'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('description') }}</strong>
@@ -105,7 +105,7 @@
                         </div>
                         <div class="form-group">
                             <label for="en_description">English :: Notice Description</label>
-                            <textarea class="form-control" name="en_description" id="summernote_en" rows="3"></textarea>
+                            <textarea class="form-control my-editor" name="en_description" id="summernote_en" rows="3"></textarea>
                             @if ($errors->has('en_description'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('en_description') }}</strong>
@@ -115,7 +115,7 @@
                         <div class="form-group">
                             <label for="en_description">Category</label>
                             <select class="form-control col-md-6" name="category_id" data-toggle="select2">
-                                <option value="">Select category</option>
+                                <option value="">--Select category--</option>
                                 @foreach($categories as $category)
                                     <option value="{{$category->id}}">{{ $category->en_title() }}</option>
                                 @endforeach
@@ -138,7 +138,7 @@
                         <div class="form-group">
                             <label for="file">Promote to Frontpage? (প্রথম পাতায় সাম্প্রতিক তথ্যসমূহ তে দেখা যাবে?) </label>
                             <select class="form-control col-md-6" name="promote" required="required">
-                                <option value="">Select an option</option>
+                                <option value="">--Select an option--</option>
                                 <option value="0">No</option>
                                 <option value="1">Yes</option>
                             </select>
@@ -168,63 +168,41 @@
 </div> <!-- container -->
 @endsection
 @section('scripts')
-
 <script>
-    $(document).ready(function() {
-        $('#summernote_bn').summernote({
-            height: 300,
-            popover: {
-                image: [
-                    ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
-                    ['float', ['floatLeft', 'floatRight', 'floatNone']],
-                    ['remove', ['removeMedia']]
-                ]
-            },
-            callbacks: {
-                onImageUpload: function(files) {
-                    for (let i = 0; i < files.length; i++) {
-                        uploadImage(files[i], '#summernote_bn');
-                    }
-                }
+    tinymce.init({
+        selector: 'textarea.my-editor',
+        height: 400,
+        plugins: 'image link media code lists table',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code',
+        relative_urls: false,
+        automatic_uploads: true,
+        file_picker_types: 'image',
+        
+
+        file_picker_callback: function (callback, value, meta) {
+            let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+            let y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+
+            let cmsURL = '/laravel-filemanager?editor=' + meta.fieldname;
+            if (meta.filetype == 'image') {
+                cmsURL = cmsURL + "&type=Images";
+            } else {
+                cmsURL = cmsURL + "&type=Files";
             }
-        });
-        $('#summernote_en').summernote({
-            height: 300,
-            popover: {
-                image: [
-                    ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
-                    ['float', ['floatLeft', 'floatRight', 'floatNone']],
-                    ['remove', ['removeMedia']]
-                ]
-            },
-            callbacks: {
-                onImageUpload: function(files) {
-                    for (let i = 0; i < files.length; i++) {
-                        uploadImage(files[i], '#summernote_en');
-                    }
+
+            tinyMCE.activeEditor.windowManager.openUrl({
+                url: cmsURL,
+                title: 'File Manager',
+                width: x * 0.8,
+                height: y * 0.8,
+                resizable: "yes",
+                close_previous: "no",
+                onMessage: function (api, message) {
+                    callback(message.content);
                 }
-            }
-        });
+            });
+        }
     });
-
-    function uploadImage(file, editorSelector) {
-        let data = new FormData();
-        data.append("file", file);
-        data.append("_token", '{{ csrf_token() }}'); 
-
-        $.ajax({
-            url: '{{ route("summernote.upload") }}', 
-            method: 'POST',
-            data: data,
-            contentType: false,
-            processData: false,
-            success: function(response) {
-                $(editorSelector).summernote('insertImage', response.url);
-            },
-            error: function(err) {
-                alert('Image upload failed!');
-            }
-        });
-    }
+    
 </script>
 @endsection

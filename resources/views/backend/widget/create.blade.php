@@ -164,7 +164,7 @@
                                 <div class="form-group">
                                     <label for="description">Bangla :: Widget Contents</label>
                                     <textarea
-                                        class="form-control editor @error('description') is-invalid @enderror"
+                                        class="form-control my-editor @error('description') is-invalid @enderror"
                                         name="description"
                                         id="description"
                                         rows="5"
@@ -181,7 +181,7 @@
                                 <div class="form-group">
                                     <label for="en_description">English :: Widget Contents</label>
                                     <textarea
-                                        class="form-control editor @error('en_description') is-invalid @enderror"
+                                        class="form-control my-editor @error('en_description') is-invalid @enderror"
                                         name="en_description"
                                         id="en_description"
                                         rows="5"
@@ -206,4 +206,41 @@
 </div> <!-- container -->
 @endsection
 @section('scripts')
+<script>
+    tinymce.init({
+        selector: 'textarea.my-editor',
+        height: 400,
+        plugins: 'image link media code lists table',
+        toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code',
+        relative_urls: false,
+        automatic_uploads: true,
+        file_picker_types: 'image',
+        
+
+        file_picker_callback: function (callback, value, meta) {
+            let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+            let y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+
+            let cmsURL = '/laravel-filemanager?editor=' + meta.fieldname;
+            if (meta.filetype == 'image') {
+                cmsURL = cmsURL + "&type=Images";
+            } else {
+                cmsURL = cmsURL + "&type=Files";
+            }
+
+            tinyMCE.activeEditor.windowManager.openUrl({
+                url: cmsURL,
+                title: 'File Manager',
+                width: x * 0.8,
+                height: y * 0.8,
+                resizable: "yes",
+                close_previous: "no",
+                onMessage: function (api, message) {
+                    callback(message.content);
+                }
+            });
+        }
+    });
+    
+</script>
 @endsection
