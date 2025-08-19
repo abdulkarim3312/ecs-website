@@ -16,85 +16,129 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [
-            'view-dashboard',
-            'delete-permissions',
-            'edit-permissions',
-            'create-permissions',
-            'view-permissions',
-            'users-management',
-            'delete-users',
-            'edit-users',
-            'create-users',
-            'view-users',
-            'roles-management',
-            'delete-roles',
-            'edit-roles',
-            'create-roles',
-            'view-roles',
-            'announcement-management',
-            'delete-announcement',
-            'edit-announcement',
-            'create-announcement',
-            'view-announcement',
-            'notice-management',
-            'delete-notice',
-            'edit-notice',
-            'create-notice',
-            'view-notice',
-            'category-management',
-            'delete-category',
-            'edit-category',
-            'create-category',
-            'view-category',
-            'widget-management',
-            'delete-widget',
-            'edit-widget',
-            'create-widget',
-            'view-widget',
-            'page-management',
-            'delete-page',
-            'edit-page',
-            'create-page',
-            'view-page',
-            'menu-management',
-            'delete-menu',
-            'edit-menu',
-            'create-menu',
-            'view-menu',
-            'setting-management',
-            'view-gallery',
-            'delete-gallery',
-            'edit-gallery',
-            'create-gallery',
-            'view-banner',
-            'delete-banner',
-            'edit-banner',
-            'create-banner',
-            'view-party',
-            'delete-party',
-            'edit-party',
-            'create-party',
-            'view-video',
-            'delete-video',
-            'edit-video',
-            'create-video',
-            'view-link',
-            'view-archive',
-            'delete-archive',
-            'edit-archive',
-            'create-archive',
-            'view-global',
-            'view-directory',
-            'delete-directory',
-            'edit-directory',
-            'create-directory'
+        $modules = [
+            'Dashboard' => [
+                'view-dashboard',
+            ],
+            'Permissions' => [
+                'delete-permissions',
+                'edit-permissions',
+                'create-permissions',
+                'view-permissions',
+            ],
+            'Users' => [
+                'users-management',
+                'delete-users',
+                'edit-users',
+                'create-users',
+                'view-users',
+            ],
+            'Roles' => [
+                'roles-management',
+                'delete-roles',
+                'edit-roles',
+                'create-roles',
+                'view-roles',
+            ],
+            'Announcement' => [
+                'announcement-management',
+                'delete-announcement',
+                'edit-announcement',
+                'create-announcement',
+                'view-announcement',
+            ],
+            'Notice' => [
+                'notice-management',
+                'delete-notice',
+                'edit-notice',
+                'create-notice',
+                'view-notice',
+            ],
+            'Category' => [
+                'category-management',
+                'delete-category',
+                'edit-category',
+                'create-category',
+                'view-category',
+            ],
+            'Widget' => [
+                'widget-management',
+                'delete-widget',
+                'edit-widget',
+                'create-widget',
+                'view-widget',
+            ],
+            'Page' => [
+                'page-management',
+                'delete-page',
+                'edit-page',
+                'create-page',
+                'view-page',
+            ],
+            'Menu' => [
+                'menu-management',
+                'delete-menu',
+                'edit-menu',
+                'create-menu',
+                'view-menu',
+            ],
+            'Setting' => [
+                'setting-management',
+            ],
+            'Gallery' => [
+                'view-gallery',
+                'delete-gallery',
+                'edit-gallery',
+                'create-gallery',
+            ],
+            'Banner' => [
+                'view-banner',
+                'delete-banner',
+                'edit-banner',
+                'create-banner',
+            ],
+            'Party' => [
+                'view-party',
+                'delete-party',
+                'edit-party',
+                'create-party',
+            ],
+            'Video' => [
+                'view-video',
+                'delete-video',
+                'edit-video',
+                'create-video',
+            ],
+            'Link' => [
+                'view-link',
+            ],
+            'Archive' => [
+                'view-archive',
+                'delete-archive',
+                'edit-archive',
+                'create-archive',
+            ],
+            'Global' => [
+                'view-global',
+            ],
+            'Directory' => [
+                'view-directory',
+                'delete-directory',
+                'edit-directory',
+                'create-directory',
+            ],
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        foreach ($modules as $module => $permissions) {
+            foreach ($permissions as $permission) {
+                Permission::firstOrCreate(
+                    ['name' => $permission, 'guard_name' => 'web'],
+                    ['module' => $module]
+                );
+            }
         }
 
+        // Admin role assign all permissions
         $adminRole = Role::firstOrCreate(['name' => 'Admin']);
         $adminRole->syncPermissions(Permission::all());
 

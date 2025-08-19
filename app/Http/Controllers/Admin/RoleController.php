@@ -44,7 +44,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::orderBy('name', 'ASC')->get();
+        $permissions = Permission::orderBy('module')->get()->groupBy('module');
         return view('backend.roles.create', compact('permissions'));
     }
 
@@ -96,7 +96,10 @@ class RoleController extends Controller
     {
         $permissionNames = $role->permissions->pluck('name')->toArray();
 
-        $permissions = Permission::select('name', 'id')->get();
+        $permissions = Permission::select('id', 'name', 'module')
+            ->orderBy('module')
+            ->get()
+            ->groupBy('module'); 
 
         return view('backend.roles.edit', compact('role', 'permissions', 'permissionNames'));
     }
