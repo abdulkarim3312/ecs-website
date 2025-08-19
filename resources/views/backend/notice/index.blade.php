@@ -84,10 +84,12 @@
                         <i class="mdi mdi-clipboard-text-outline me-2 text-primary fs-5"></i>
                         <span class="fw-bold me-3">Notice List</span>
                     </div>
-
-                    <a href="{{ route('notice.create') }}" class="btn btn-primary btn-sm">
-                        <i class="mdi mdi-plus-circle"></i> Add New
-                    </a>
+                    @can('create-notice')
+                        <a href="{{ route('notice.create') }}" class="btn btn-primary btn-sm">
+                            <i class="mdi mdi-plus-circle"></i> Add New
+                        </a>
+                    @endcan
+                    
                 </div>
                 <div class="card-body pt-2">
                     <table class="table table-bordered table-striped" id="responsive-datatable" style="width:100%">
@@ -123,7 +125,7 @@
             { data: 'en_title', name: 'en_title', width: '30%' },
             { data: 'published_by', name: 'published_by' },
             { data: 'created_at', name: 'created_at' },
-            { data: 'action', title: 'Action', orderable: false, searchable: false, width: '15%' }
+            { data: 'action', title: 'Action', orderable: false, searchable: false, width: '10%' }
         ]
     });
 

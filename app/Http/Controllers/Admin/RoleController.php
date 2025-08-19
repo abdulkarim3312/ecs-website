@@ -12,13 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 
-
-#[Middleware(PermissionMiddleware::class, 'view roles', only: ['index'])]
-#[Middleware(PermissionMiddleware::class, 'create roles', only: ['create', 'store'])]
-#[Middleware(PermissionMiddleware::class, 'edit roles', only: ['edit', 'update'])]
-#[Middleware(PermissionMiddleware::class, 'delete roles', only: ['destroy'])]
-
-
 class RoleController extends Controller
 {
 
@@ -30,6 +23,11 @@ class RoleController extends Controller
             $this->user = auth()->guard('web')->user();
             return $next($request);
         });
+
+        $this->middleware('permission:view-roles')->only('index');
+        $this->middleware('permission:create-roles')->only(['create', 'store']);
+        $this->middleware('permission:edit-roles')->only(['edit', 'update']);
+        $this->middleware('permission:delete-roles')->only('destroy');
     }
 
     /**
@@ -124,7 +122,8 @@ class RoleController extends Controller
             }
 
             session()->flash('success', 'Role Updated successfully !!');
-            return redirect()->route('roles.index');
+            return redirect()->back();
+            // return redirect()->route('roles.index');
         } else {
             return redirect()->route('roles.edit', $id)->withInput()->withErrors($validator);
         }

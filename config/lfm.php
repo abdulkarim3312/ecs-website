@@ -129,7 +129,7 @@ return [
      */
 
     // If true, image thumbnails would be created during upload
-    'should_create_thumbnails' => false,
+    'should_create_thumbnails' => true,
 
     'thumb_folder_name'        => 'thumbs',
 
@@ -179,4 +179,6 @@ return [
     'php_ini_overrides'        => [
         'memory_limit' => '256M',
     ],
+
+    'intervention_driver' => 'gd', // options: gd, imagick
 ];

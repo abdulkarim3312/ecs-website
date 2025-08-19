@@ -177,17 +177,16 @@
         relative_urls: false,
         automatic_uploads: true,
         file_picker_types: 'image',
-        
 
         file_picker_callback: function (callback, value, meta) {
             let x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
             let y = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
 
             let cmsURL = '/laravel-filemanager?editor=' + meta.fieldname;
-            if (meta.filetype == 'image') {
-                cmsURL = cmsURL + "&type=Images";
+            if (meta.filetype === 'image') {
+                cmsURL += "&type=Images";
             } else {
-                cmsURL = cmsURL + "&type=Files";
+                cmsURL += "&type=Files";
             }
 
             tinyMCE.activeEditor.windowManager.openUrl({
@@ -198,7 +197,10 @@
                 resizable: "yes",
                 close_previous: "no",
                 onMessage: function (api, message) {
-                    callback(message.content);
+                    let path = message.content.replace(/^\/+/, ''); // remove leading slash
+                    let url = window.location.origin + '/storage/' + encodeURI(path); // fix URL + encode spaces
+
+                    callback(url); // insert full URL into editor
                 }
             });
         }

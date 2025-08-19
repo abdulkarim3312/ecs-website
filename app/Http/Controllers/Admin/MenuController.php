@@ -13,6 +13,20 @@ use Yajra\DataTables\Facades\DataTables;
 
 class MenuController extends Controller
 {
+    public $user;
+    
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->guard('web')->user();
+            return $next($request);
+        });
+
+        $this->middleware('permission:view-menu')->only('index');
+        $this->middleware('permission:create-menu')->only(['create', 'store']);
+        $this->middleware('permission:edit-menu')->only(['edit', 'update']);
+        $this->middleware('permission:delete-menu')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -69,17 +83,29 @@ class MenuController extends Controller
                 ->addColumn('action', function ($menu) {
                     $editUrl = route('menu.edit', $menu->id);
                     $deleteUrl = route('menu.destroy', $menu->id);
-                    return '
-                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $menu->id . '" style="display:inline-block;">
-                            ' . csrf_field() . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger deleteItem">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </form>
-                    ';
+
+                    $buttons = '';
+
+                    if (auth()->user()->can('edit-menu')) {
+                        $buttons .= '
+                            <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        ';
+                    }
+
+                    if (auth()->user()->can('delete-menu')) {
+                        $buttons .= '
+                            <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $menu->id . '" style="display:inline-block;">
+                                ' . csrf_field() . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-sm btn-danger deleteItem">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    return $buttons ?: '<span class="text-muted">No Actions</span>';
                 })
 
                 ->rawColumns(['page_name', 'action'])

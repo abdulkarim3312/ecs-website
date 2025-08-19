@@ -67,12 +67,12 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @can('edit roles')
+                                            @can('edit-roles')
                                                 <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-sm btn-primary text-white edit_btn">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                             @endcan
-                                            @can('delete roles')
+                                            @can('delete-roles')
                                                 <button class="btn btn-danger btn-sm deleteItem" data-id="{{ $role->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </button>

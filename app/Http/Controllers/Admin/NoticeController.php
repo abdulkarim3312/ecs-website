@@ -13,6 +13,20 @@ use Yajra\DataTables\Facades\DataTables;
 
 class NoticeController extends Controller
 {
+    public $user;
+    
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->guard('web')->user();
+            return $next($request);
+        });
+
+        $this->middleware('permission:view-notice')->only(['index', 'show']);
+        $this->middleware('permission:create-notice')->only(['create', 'store']);
+        $this->middleware('permission:edit-notice')->only(['edit', 'update']);
+        $this->middleware('permission:delete-notice')->only('destroy');
+    }
     /**
      * This functions is returning all notices
      */
@@ -57,24 +71,46 @@ class NoticeController extends Controller
                 })
 
                 ->addColumn('action', function (Notice $notice) {
-                    $editUrl = route('notice.edit', $notice->id);
-                    $deleteUrl = route('notice.destroy', $notice->id);
-                    $showUrl = route('notice.show', $notice->id);
-
-                    return '
-                        <a href="' . $showUrl . '" class="btn btn-sm btn-purple text-white">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $notice->id . '" style="display:inline-block;">
-                            ' . csrf_field() . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-danger btn-sm deleteItem">
-                                <i class="fa fa-trash"></i>
+                    $dropdown = '
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-purple dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Actions
                             </button>
-                        </form>
-                    ';
+                            <ul class="dropdown-menu">';
+
+                    if (auth()->user()->can('view-notice')) {
+                        $dropdown .= '
+                            <li>
+                                <a class="dropdown-item" href="' . route('notice.show', $notice->id) . '">
+                                    <i class="fa fa-eye text-primary"></i> View
+                                </a>
+                            </li>';
+                    }
+                    if (auth()->user()->can('edit-notice')) {
+                        $dropdown .= '
+                            <li>
+                                <a class="dropdown-item" href="' . route('notice.edit', $notice->id) . '">
+                                    <i class="fa fa-edit text-warning"></i> Edit
+                                </a>
+                            </li>';
+                    }
+                    if (auth()->user()->can('delete-notice')) {
+                        $dropdown .= '
+                            <li>
+                                <form action="' . route('notice.destroy', $notice->id) . '" method="POST" class="delete-form" data-id="' . $notice->id . '" data-name="' . e($notice->title ?? $notice->id) . '">
+                                    ' . csrf_field() . method_field('DELETE') . '
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </li>';
+                    }
+
+                    $dropdown .= '
+                            </ul>
+                        </div>';
+
+                    return $dropdown;
                 })
 
                 ->rawColumns(['action'])
