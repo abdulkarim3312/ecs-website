@@ -59,53 +59,65 @@
                         <i class="fas fa-arrow-left me-2"></i> Back to Role
                     </a>
                 </div>
-
                 <div class="card-body">
                     <form action="{{ route('roles.store') }}" method="POST">
                         @csrf
                         <div class="row mb-3">
-                            <label for="inputEmail3" class="col-2 col-form-label">Name</label>
-                            <div class="col-10">
-                                <input type="text" name="name" value="{{ old('name') }}" class="form-control" id="basiInput" placeholder="Enter Role Name">
+                            <label for="roleName" class="col-12 col-md-2 col-form-label">Name</label>
+                            <div class="col-12 col-md-10">
+                                <input type="text" name="name" value="{{ old('name') }}" class="form-control" id="roleName" placeholder="Enter Role Name">
                                 @error('name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="inputPassword3" class="col-2 col-form-label"></label>
-                            <div class="col-10">
-                                <input type="checkbox" id="checkAll" class="form me-1">Check All
-                            </div>
-                        </div>
-                        <div class="row gy-4 mt-1">
-                            <label for="basiInput" class="form-label col-sm-2">Permission</label>
-                            <div class="col-sm-10">
-                                <div class="row">
-                                    @if ($permissions->isNotEmpty())
-                                        @foreach ($permissions as $permission)
-                                            <div class="col-md-3">
-                                                <div class="">
-                                                    <label for="{{ 'permission-' . $permission->id }}" class="mt-1">
-                                                        <input type="checkbox" class="form mt-0" name="permissions[]" id="{{ 'permission-' . $permission->id }}" {{ old('permission') && in_array($permission->name, old('permission')) ? 'checked' : '' }} value="{{ $permission->name ?? '' }}">
-                                                        <label for="{{ 'permission-' . $permission->id }}">{{ $permission->name ?? '' }}</label>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endif
+                            <div class="col-12">
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" id="checkAll" class="form-check-input">
+                                    <label class="form-check-label" for="checkAll">Check All Permissions</label>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3 d-flex align-items-end">
-                                <button type="submit" class="btn btn-purple waves-effect waves-light width-sm">Save</button>
-                                <a href="{{ route('roles.index') }}" class="btn btn-success mdi mdi-undo-variant width-sm mx-1">Back</a>
-                            </div>
+                        <div class="row gy-3 mt-1">
+                            @foreach ($permissions as $module => $modulePermissions)
+                                <div class="col-12 border rounded p-2 mb-2 d-flex align-items-start">
+                                    <div class="col-12 col-md-2 fw-bold text-primary">
+                                        {{ ucfirst($module) }}
+                                    </div>
+
+                                    <div class="col-12 col-md-10">
+                                        <div class="row">
+                                            @foreach ($modulePermissions as $permission)
+                                                <div class="col-6 col-md-3">
+                                                    <div class="form-check mt-1">
+                                                        <input type="checkbox"
+                                                            name="permissions[]"
+                                                            class="form-check-input permission-checkbox"
+                                                            id="permission-{{ $permission->id }}"
+                                                            value="{{ $permission->name }}"
+                                                            {{ old('permissions') && in_array($permission->name, old('permissions')) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="permission-{{ $permission->id }}">
+                                                            {{ str_replace('_', ' ', $permission->name) }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="text-start mt-3 d-flex gap-2 flex-wrap">
+                            <button type="submit" class="btn btn-purple waves-effect waves-light width-sm">
+                                Save
+                            </button>
+                            <a href="{{ route('roles.index') }}" class="btn btn-success mdi mdi-undo-variant width-sm mx-1">
+                                Back
+                            </a>
                         </div>
                     </form>
                 </div>
-
             </div> <!-- end card-->
         </div>
     </div>
