@@ -92,10 +92,12 @@
                             </label>
                         </div>
                     </div>
-
-                    <a href="{{ route('announcements.create') }}" class="btn btn-primary btn-sm">
-                        <i class="mdi mdi-plus-circle"></i> Add New
-                    </a>
+                    @can('create-announcement')
+                        <a href="{{ route('announcements.create') }}" class="btn btn-primary btn-sm">
+                            <i class="mdi mdi-plus-circle"></i> Add New
+                        </a>
+                    @endcan
+                    
                 </div>
                 <div class="card-body pt-2">
                     <table class="table table-bordered table-striped" id="responsive-datatable" style="width:100%">

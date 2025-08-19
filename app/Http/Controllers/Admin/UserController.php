@@ -18,11 +18,6 @@ use Spatie\Permission\Middleware\PermissionMiddleware;
 
 
 
-#[Middleware(PermissionMiddleware::class, 'view users', only: ['index'])]
-#[Middleware(PermissionMiddleware::class, 'create users', only: ['create', 'store'])]
-#[Middleware(PermissionMiddleware::class, 'edit users', only: ['edit', 'update'])]
-#[Middleware(PermissionMiddleware::class, 'delete users', only: ['destroy'])]
-
 class UserController extends Controller
 {
 
@@ -34,6 +29,11 @@ class UserController extends Controller
             $this->user = auth()->guard('web')->user();
             return $next($request);
         });
+
+        $this->middleware('permission:view-users')->only('index');
+        $this->middleware('permission:create-users')->only(['create', 'store']);
+        $this->middleware('permission:edit-users')->only(['edit', 'update']);
+        $this->middleware('permission:delete-users')->only('destroy');
     }
     /**
      * admin login

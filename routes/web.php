@@ -1,5 +1,6 @@
 <?php
 
+use UniSharp\LaravelFilemanager\Lfm;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\MenuController;
@@ -62,7 +63,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::resource('archive', ArchiveController::class);
     Route::resource('directory', DirectoryController::class);
 
-    Route::get('global-setting', [GlobalSettingController::class, 'create'])->name('global.create');
+    Route::get('global-setting', [GlobalSettingController::class, 'create'])
+    ->name('global.create')
+    ->middleware(['auth', 'permission:view-global']);
     Route::post('global-store', [GlobalSettingController::class, 'updateOrCreateGlobalSetting'])->name('global.store');
 
     Route::post('/summernote-upload', [PageController::class, 'upload'])->name('summernote.upload');
@@ -74,5 +77,5 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
 });
 
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
-    \UniSharp\LaravelFilemanager\Lfm::routes();
+    Lfm::routes();
 });

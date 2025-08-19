@@ -1,43 +1,52 @@
-@extends('backend.layouts.master')
-
-@section('title')
-    Authentication Error | Not authorized to access this page
-@endsection
-
-@section('styles')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Forbidden</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .error-box .error-title {
-            font-size: 210px;
-            font-weight: 900;
-            text-shadow: 4px 4px 0 #fff, 6px 6px 0 #343a40;
-            line-height: 210px;
+        body {
+            background: #28243d;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .error-container {
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 120px;
+            font-weight: bold;
+            color: red;
+        }
+        p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .btn-home {
+            background-color: #0d6efd;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .btn-home:hover {
+            background-color: #084298;
         }
     </style>
-@endsection
-
-@section('main-content')
-<div class="container-fluid text-center">
-    <div class="error-box">
-        <div class="error-body text-center">
-            <h1 class="error-title">403</h1>
-            <h3 class="text-uppercase error-subtitle">FORBIDDON ERROR!</h3>
-            <p class="text-muted m-t-30 m-b-30">YOU DON'T HAVE PERMISSION TO DO THIS ACTION.</p>
-            <a href="{{ route('dashboard') }}" class="btn btn-primary btn-rounded waves-effect waves-light m-b-40"><i class="fa fa-arrow-left"></i> Back to home</a>
-
-
-            @if (Auth::guard('web')->check())
-                <button class="btn btn-danger btn-rounded waves-effect waves-light m-b-40" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" aria-expanded="false" > Logout Now <i class="fa fa-arrow-right"></i></button>
-                <form id="logout-form" method="POST" style="display: none;" action="{{ route('admin-logout') }}">
-                    @csrf
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="btn btn-info btn-rounded waves-effect waves-light m-b-40"> Login Again <i class="fa fa-arrow-right"></i></a>
-            @endif
-        </div>
+</head>
+<body>
+    <div class="error-container">
+        <h1>STOP</h1>
+        <h3>Access Forbidden</h3>
+        <p>You Can't Access This Page as <b style="text-transform: capitalize;">{{ Auth::user()->name ?? '' }}</b> Role</p>
+        <a href="{{ route('dashboard') }}" class="btn-home">Go to Home Page</a>
     </div>
-</div>
-@endsection
-@section('scripts')
-
-@endsection
-
+</body>
+</html>

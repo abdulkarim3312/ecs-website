@@ -80,10 +80,11 @@
                         <i class="mdi mdi-clipboard-text-outline me-2 text-primary fs-5"></i>
                         <span class="fw-bold me-3">Party List</span>
                     </div>
-
-                    <a href="{{ route('party.create') }}" class="btn btn-primary btn-sm">
-                        <i class="mdi mdi-plus-circle"></i> Add New
-                    </a>
+                    @can('create-party')
+                        <a href="{{ route('party.create') }}" class="btn btn-primary btn-sm">
+                            <i class="mdi mdi-plus-circle"></i> Add New
+                        </a>
+                    @endcan
                 </div>
                 <div class="card-body pt-2">
                     <table class="table table-bordered table-striped" id="responsive-datatable" style="width:100%">

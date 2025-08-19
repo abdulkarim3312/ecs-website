@@ -17,7 +17,7 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            'view dashboard',
+            'view-dashboard',
             'delete-permissions',
             'edit-permissions',
             'create-permissions',
@@ -64,13 +64,31 @@ class AdminSeeder extends Seeder
             'view-menu',
             'setting-management',
             'view-gallery',
+            'delete-gallery',
+            'edit-gallery',
+            'create-gallery',
             'view-banner',
+            'delete-banner',
+            'edit-banner',
+            'create-banner',
             'view-party',
+            'delete-party',
+            'edit-party',
+            'create-party',
             'view-video',
+            'delete-video',
+            'edit-video',
+            'create-video',
             'view-link',
             'view-archive',
+            'delete-archive',
+            'edit-archive',
+            'create-archive',
             'view-global',
             'view-directory',
+            'delete-directory',
+            'edit-directory',
+            'create-directory'
         ];
 
         foreach ($permissions as $permission) {

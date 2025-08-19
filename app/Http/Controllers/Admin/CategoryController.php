@@ -11,6 +11,21 @@ use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
+
+    public $user;
+    
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->guard('web')->user();
+            return $next($request);
+        });
+
+        $this->middleware('permission:view-category')->only('index');
+        $this->middleware('permission:create-category')->only(['create', 'store']);
+        $this->middleware('permission:edit-category')->only(['edit', 'update']);
+        $this->middleware('permission:delete-category')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -54,17 +69,28 @@ class CategoryController extends Controller
                     $editUrl = route('category.edit', $category->id);
                     $deleteUrl = route('category.destroy', $category->id);
 
-                    return '
-                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $category->id . '" style="display:inline-block;">
-                            ' . csrf_field() . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-danger btn-sm deleteItem">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </form>
-                    ';
+                    $buttons = '';
+
+                    if (auth()->user()->can('edit-category')) {
+                        $buttons .= '
+                            <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        ';
+                    }
+
+                    if (auth()->user()->can('delete-category')) {
+                        $buttons .= '
+                            <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $category->id . '" style="display:inline-block;">
+                                ' . csrf_field() . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm deleteItem">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    return $buttons;
                 })
 
                 ->rawColumns(['action'])

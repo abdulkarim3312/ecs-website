@@ -11,6 +11,20 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PartyController extends Controller
 {
+    public $user;
+    
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->guard('web')->user();
+            return $next($request);
+        });
+
+        $this->middleware('permission:view-party')->only('index');
+        $this->middleware('permission:create-party')->only(['create', 'store']);
+        $this->middleware('permission:edit-party')->only(['edit', 'update']);
+        $this->middleware('permission:delete-party')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -46,17 +60,26 @@ class PartyController extends Controller
                     $editUrl = route('party.edit', $party->id);
                     $deleteUrl = route('party.destroy', $party->id);
 
-                    return '
-                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $party->id . '" style="display:inline-block;">
-                            ' . csrf_field() . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-danger btn-sm deleteItem">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </form>
-                    ';
+                    $buttons = '';
+                    if (auth()->user()->can('edit-party')) {
+                        $buttons .= '
+                            <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        ';
+                    }
+                    if (auth()->user()->can('delete-party')) {
+                        $buttons .= '
+                            <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $party->id . '" style="display:inline-block;">
+                                ' . csrf_field() . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm deleteItem">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    return $buttons ?: '<span class="text-muted">No Actions</span>';
                 })
 
                 ->rawColumns(['action'])

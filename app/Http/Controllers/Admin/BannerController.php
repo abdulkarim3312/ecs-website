@@ -10,6 +10,20 @@ use Yajra\DataTables\Facades\DataTables;
 
 class BannerController extends Controller
 {
+    public $user;
+    
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->user = auth()->guard('web')->user();
+            return $next($request);
+        });
+
+        $this->middleware('permission:view-banner')->only('index');
+        $this->middleware('permission:create-banner')->only(['create', 'store']);
+        $this->middleware('permission:edit-banner')->only(['edit', 'update']);
+        $this->middleware('permission:delete-banner')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -38,17 +52,28 @@ class BannerController extends Controller
                     $editUrl = route('banner.edit', $banner->id);
                     $deleteUrl = route('banner.destroy', $banner->id);
 
-                    return '
-                        <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
-                            <i class="fa fa-edit"></i>
-                        </a>
-                        <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $banner->id . '" style="display:inline-block;">
-                            ' . csrf_field() . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-danger btn-sm deleteItem">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </form>
-                    ';
+                    $buttons = '';
+
+                    if (auth()->user()->can('edit-banner')) {
+                        $buttons .= '
+                            <a href="' . $editUrl . '" class="btn btn-sm btn-primary text-white">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        ';
+                    }
+                    
+                    if (auth()->user()->can('delete-banner')) {
+                        $buttons .= '
+                            <form action="' . $deleteUrl . '" method="POST" class="delete-form" data-id="' . $banner->id . '" style="display:inline-block;">
+                                ' . csrf_field() . method_field('DELETE') . '
+                                <button type="submit" class="btn btn-danger btn-sm deleteItem">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        ';
+                    }
+
+                    return $buttons ?: '<span class="text-muted">No Actions</span>';
                 })
 
                 ->rawColumns(['image', 'action']) 

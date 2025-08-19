@@ -34,9 +34,11 @@
                     <h4 class="header-title mb-0">
                         <i class="mdi mdi-clipboard-text-outline me-2 text-primary"></i> Directory Category List
                     </h4>
-                    <button type="button" id="addNew" class="btn btn-primary btn-sm">
-                        <i class="mdi mdi-plus-circle"></i> Add New
-                    </button>
+                    @can('create-directory')
+                        <button type="button" id="addNew" class="btn btn-primary btn-sm">
+                            <i class="mdi mdi-plus-circle"></i> Add New
+                        </button>
+                    @endcan
                 </div>
                 <div class="card-body pt-2">
                     <table class="table table-bordered table-striped" id="responsive-datatable" style="width:100%">
