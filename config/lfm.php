@@ -53,13 +53,31 @@ return [
             'thumb' => true,
             'thumb_width' => 80,
             'thumb_height' => 80,
-            'valid_mime'   => [
+            'valid_mime' => [
+                // PDFs
+                'application/pdf',
+                'application/x-pdf',
+                'application/acrobat',
+                'applications/vnd.pdf',
+                'application/octet-stream',
+
+                // Word
+                'application/msword', // .doc
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+
+                // Excel
+                'application/vnd.ms-excel', // .xls
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+
+                // PowerPoint
+                'application/vnd.ms-powerpoint', // .ppt
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
+
+                // Images
                 'image/jpeg',
                 'image/pjpeg',
                 'image/png',
                 'image/gif',
-                'application/pdf',
-                'text/plain',
             ],
         ],
         'image' => [
@@ -114,7 +132,7 @@ return [
     'over_write_on_duplicate'  => false,
 
     // mimetypes of executables to prevent from uploading
-    'disallowed_mimetypes' => ['text/x-php', 'text/html', 'text/plain'],
+    'disallowed_mimetypes' => ['text/x-php', 'text/html'],
 
     // extensions of executables to prevent from uploading
     'disallowed_extensions' => ['php', 'html'],
