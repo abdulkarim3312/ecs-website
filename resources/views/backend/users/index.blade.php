@@ -11,16 +11,16 @@
     <div class="page-title-box">
         <div class="d-flex align-items-sm-center flex-sm-row flex-column gap-2">
             <div class="flex-grow-1">
-                <h4 class="font-18 mb-0">Data Tables</h4>
+                <h4 class="font-18 mb-0">User Dashboard</h4>
             </div>
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Uplon</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">User Management</a></li>
                     
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">User</a></li>
                     
-                    <li class="breadcrumb-item active">Data Tables</li>
+                    <li class="breadcrumb-item active">User List</li>
                 </ol>
             </div>
         </div>
@@ -71,12 +71,12 @@
                                         <td>{{ $user->created_at->format('d-m-Y') }}</td>
                                         <td>{{ $user->last_login ? \Carbon\Carbon::parse($user->last_login)->setTimezone('Asia/Dhaka')->format('d-m-Y h:i:s A') : '' }}</td>
                                         <td>
-                                            @can('edit users')
+                                            @can('edit-users')
                                                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary text-white edit_btn">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                             @endcan
-                                            @can('delete users')
+                                            @can('delete-users')
                                                 <button class="btn btn-danger btn-sm deleteItem" data-id="{{ $user->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </button>

@@ -13,16 +13,18 @@ class CreateNoticeTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('notice_translations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('notice_id')->unsigned();
-            $table->string('locale')->index();
-            $table->string('title');
-            $table->text('description');
-            $table->unique(['notice_id','locale']);
-            $table->foreign('notice_id')->references('id')->on('notices')->onDelete('cascade');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('notice_translations')) {
+            Schema::create('notice_translations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('notice_id')->unsigned();
+                $table->string('locale')->index();
+                $table->string('title');
+                $table->text('description');
+                $table->unique(['notice_id','locale']);
+                $table->foreign('notice_id')->references('id')->on('notices')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

@@ -13,16 +13,18 @@ class CreateGlobalSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('global_settings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('facebook')->nullable();
-            $table->string('twitter')->nullable();
-            $table->string('google_plus')->nullable();
-            $table->string('contact')->nullable();
-            $table->string('email')->nullable();
-            $table->boolean('announcement_status')->default(0);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('global_settings')) {
+            Schema::create('global_settings', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('facebook')->nullable();
+                $table->string('twitter')->nullable();
+                $table->string('google_plus')->nullable();
+                $table->string('contact')->nullable();
+                $table->string('email')->nullable();
+                $table->boolean('announcement_status')->default(0);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

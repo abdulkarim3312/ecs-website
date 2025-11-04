@@ -27,6 +27,9 @@
     .ck-editor__editable_inline {
         min-height: 300px;
     }
+    .tox .tox-promotion {
+        display: none !important;
+    }
 </style>
 @endsection
 

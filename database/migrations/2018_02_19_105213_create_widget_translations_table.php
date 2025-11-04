@@ -13,16 +13,18 @@ class CreateWidgetTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('widget_translations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('widget_id')->unsigned();
-            $table->string('locale')->index();
-            $table->string('title');
-            $table->text('description');
-            $table->unique(['widget_id','locale']);
-            $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('widget_translations')) {
+            Schema::create('widget_translations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('widget_id')->unsigned();
+                $table->string('locale')->index();
+                $table->string('title');
+                $table->text('description');
+                $table->unique(['widget_id','locale']);
+                $table->foreign('widget_id')->references('id')->on('widgets')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

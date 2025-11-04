@@ -36,6 +36,9 @@
         display: block;
         margin: 0 auto;
     }
+    .tox .tox-promotion {
+        display: none !important;
+    }
 </style>
 @endsection
 
