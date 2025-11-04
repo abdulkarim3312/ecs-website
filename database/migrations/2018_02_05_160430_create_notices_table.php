@@ -13,16 +13,18 @@ class CreateNoticesTable extends Migration
      */
     public function up()
     {
-        Schema::create('notices', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('category_id')->unsigned();
-            $table->string('slug')->unique();
-            $table->string('docs')->nullable();
-            $table->integer('published_by')->unsigned();
-            $table->timestamps();
-            $table->foreign('published_by')->references('id')->on('users');
-            $table->foreign('category_id')->references('id')->on('categories');
-        });
+        if (!Schema::hasTable('notices')) {
+            Schema::create('notices', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('category_id')->unsigned();
+                $table->string('slug')->unique();
+                $table->string('docs')->nullable();
+                $table->integer('published_by')->unsigned();
+                $table->timestamps();
+                $table->foreign('published_by')->references('id')->on('users');
+                $table->foreign('category_id')->references('id')->on('categories');
+            });
+        }
     }
 
     /**

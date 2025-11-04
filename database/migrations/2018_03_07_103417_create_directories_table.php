@@ -13,14 +13,16 @@ class CreateDirectoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('directories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('category_id')->unsigned();
-            $table->string('name');
-            $table->string('number');
-	        $table->foreign('category_id')->references('id')->on('directory_categories')->onDelete('cascade');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('directories')) {
+            Schema::create('directories', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('category_id')->unsigned();
+                $table->string('name');
+                $table->string('number');
+                $table->foreign('category_id')->references('id')->on('directory_categories')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

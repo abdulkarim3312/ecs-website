@@ -13,16 +13,18 @@ class CreateCategoryTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_translations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('category_id')->unsigned();
-            $table->string('locale')->index();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->unique(['category_id','locale']);
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('category_translations')) {
+            Schema::create('category_translations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('category_id')->unsigned();
+                $table->string('locale')->index();
+                $table->string('title');
+                $table->text('description')->nullable();
+                $table->unique(['category_id','locale']);
+                $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

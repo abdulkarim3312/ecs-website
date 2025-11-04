@@ -13,18 +13,20 @@ class CreatePartiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('parties', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('registration_no');
-            $table->date('registration_date');
-            $table->string('symbol_name');
-            $table->string('party_symbol');
-            $table->string('phone');
-            $table->string('mobile');
-            $table->string('email')->nullable();
-            $table->string('website')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('parties')) {
+            Schema::create('parties', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('registration_no');
+                $table->date('registration_date');
+                $table->string('symbol_name');
+                $table->string('party_symbol');
+                $table->string('phone');
+                $table->string('mobile');
+                $table->string('email')->nullable();
+                $table->string('website')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

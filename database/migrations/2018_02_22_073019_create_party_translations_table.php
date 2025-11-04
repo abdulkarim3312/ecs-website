@@ -13,23 +13,25 @@ class CreatePartyTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('party_translations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('party_id')->unsigned();
-            $table->string('locale')->index();
-            $table->string('party_name');
-            $table->string('president');
-            $table->string('secretary_general');
-            $table->string('chairperson');
-            $table->string('chairman');
-            $table->string('general_secretary')->comment('Shadharon Shompadok');
-            $table->string('aamir');
-            $table->string('bod')->comment('Board of directors head');
-            $table->string('address');
-            $table->unique(['party_id','locale']);
-            $table->timestamps();
-            $table->foreign('party_id')->references('id')->on('parties')->onDelete('cascade');
-        });
+        if (!Schema::hasTable('party_translations')) {
+            Schema::create('party_translations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('party_id')->unsigned();
+                $table->string('locale')->index();
+                $table->string('party_name');
+                $table->string('president');
+                $table->string('secretary_general');
+                $table->string('chairperson');
+                $table->string('chairman');
+                $table->string('general_secretary')->comment('Shadharon Shompadok');
+                $table->string('aamir');
+                $table->string('bod')->comment('Board of directors head');
+                $table->string('address');
+                $table->unique(['party_id','locale']);
+                $table->timestamps();
+                $table->foreign('party_id')->references('id')->on('parties')->onDelete('cascade');
+            });
+        }
     }
 
     /**

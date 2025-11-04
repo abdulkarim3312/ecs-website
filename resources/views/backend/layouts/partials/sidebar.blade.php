@@ -3,13 +3,13 @@
 <div class="sidenav-menu">
     <a href="{{ route('dashboard') }}" class="logo">
         <span class="logo-light">
-            <span class="logo-lg"><img src="{{ asset('backend/assets/images/logo-light.png') }}" alt="logo"></span>
-            <span class="logo-sm"><img src="{{ asset('backend/assets/images/logo-sm-light.png') }}" alt="small logo"></span>
+            <span class="logo-lg"><img style="height: 51px;" src="{{ asset('backend/assets/images/logo.png') }}" alt="logo"></span>
+            <span class="logo-sm"><img src="{{ asset('backend/assets/images/logo.png') }}" alt="small logo"></span>
         </span>
 
         <span class="logo-dark">
-            <span class="logo-lg"><img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="dark logo"></span>
-            <span class="logo-sm"><img src="{{ asset('backend/assets/images/logo-sm.png') }}" alt="small logo"></span>
+            <span class="logo-lg"><img style="height: 51px;" src="{{ asset('backend/assets/images/logo.png') }}" alt="dark logo"></span>
+            <span class="logo-sm"><img src="{{ asset('backend/assets/images/logo.png') }}" alt="small logo"></span>
         </span>
     </a>
     <button class="button-sm-hover">
@@ -28,8 +28,15 @@
                     <span class="badge bg-success rounded-pill"></span>
                 </a>
             </li>
-            @can('users-management',)
-                <li class="side-nav-item {{ (Route::is('users.index') || Route::is('users.show') || Route::is('users.create') || Route::is('users.edit')) ? 'active' : ''}}">
+            @can('users-management')
+                <li class="side-nav-item {{ 
+                (Route::is('users.index') || 
+                Route::is('users.show') || 
+                Route::is('users.create') ||
+                Route::is('roles.index') || 
+                Route::is('roles.show') || 
+                Route::is('roles.create') || 
+                Route::is('users.edit')) ? 'active' : ''}}">
                     <a data-bs-toggle="collapse" href="#sidebarPagesAuth" aria-expanded="false" aria-controls="sidebarPagesAuth" class="side-nav-link">
                         <span class="menu-icon"><i class="mdi mdi-lock-outline"></i></span>
                         <span class="menu-text"> User Management </span>
@@ -45,12 +52,20 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('view-roles')
+                                <li class="side-nav-item {{ (Route::is('roles.index') || Route::is('roles.edit') || Route::is('roles.create')) ? 'active' : '' }}">
+                                    <a href="{{ route('roles.index') }}" class="side-nav-link {{ (Route::is('roles.index') || Route::is('roles.edit') || Route::is('roles.create')) ? 'active' : '' }}">
+                                        <i class="fas fa-arrow-right"></i>
+                                        <span class="menu-text">Role</span>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </div>
                 </li>
             @endcan
 
-            @can('roles-management')
+            {{-- @can('roles-management')
                 <li class="side-nav-item {{ 
                     (Route::is('roles.index') || 
                     Route::is('roles.show') || 
@@ -96,7 +111,7 @@
                         </ul>
                     </div>
                 </li>
-            @endcan
+            @endcan --}}
             @can('announcement-management')
                 <li class="side-nav-item {{ 
                     (Route::is('announcements.index') || 

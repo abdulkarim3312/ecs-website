@@ -13,16 +13,18 @@ class CreateArchiveTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('archive_translations', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('archive_id')->unsigned();
-            $table->string('locale')->index();
-            $table->string('title');
-            $table->text('description');
-            $table->unique(['archive_id','locale']);
-            $table->foreign('archive_id')->references('id')->on('archives')->onDelete('cascade');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('archive_translations')) {
+            Schema::create('archive_translations', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('archive_id')->unsigned();
+                $table->string('locale')->index();
+                $table->string('title');
+                $table->text('description');
+                $table->unique(['archive_id','locale']);
+                $table->foreign('archive_id')->references('id')->on('archives')->onDelete('cascade');
+                $table->timestamps();
+            });
+        }
     }
 
     /**

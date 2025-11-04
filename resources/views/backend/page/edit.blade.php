@@ -25,6 +25,9 @@
         box-shadow: 0 0 5px rgba(0, 123, 255, 0.6); /* Bigger and more visible glow */
         outline: none;
     }
+    .tox .tox-promotion {
+        display: none !important;
+    }
 </style>
 @endsection
 

@@ -13,13 +13,15 @@ class CreateWidgetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('widgets', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('position')->comment('1=Left,2=Right');
-            $table->integer('promote')->comment('1=Yes,2=No');
-            $table->integer('order');
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('widgets')) {
+            Schema::create('widgets', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('position')->comment('1=Left,2=Right');
+                $table->integer('promote')->comment('1=Yes,2=No');
+                $table->integer('order');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
